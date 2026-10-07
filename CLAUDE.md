@@ -9,6 +9,31 @@ the app's UI speaks to a woman (feminine forms: قولي، ضيفي، صرفتي
 - Currency SAR. He chose: monthly budget (+ optional limit per category). He did NOT choose PDF report /
   month comparison / fixed bills (ask before adding).
 
+## v2026.10.07.1 (2026-10-07) — his request «اعمل المزامنة… وكمّل التطبيق»
+Sync, who-spent (`WHO`, `e.by`), fixed monthly bills (`D.bills`, paid = an expense with `bill:id` that month),
+6-month chart + last-month compare, smart alerts, photo per expense (IndexedDB `bait`/photos, not synced),
+month report A4 pictures + Excel (local `exceljs.min.js`), own categories (`D.cats`), splash + tour, back button
+closes sheets (`openOv/closeOv` + history).
+**Sync**: Firebase project `bait-sync` (his Google account, created by me with his OK; his own project
+«Planning With AI» untouched). Anonymous auth ON, Firestore (eur3, Standard, production mode). One doc per family
+`families/{id}` with field `d` = AES-GCM sealed JSON (key only in the phones, passed by QR / link `#join=id.key`),
+records merged by `u` (deletions = `{id,del:1,u}`), settings by `setU`. REST only (no SDK): `fbToken`, `pull`, `push`.
+**Security rules must be pasted by HIM** (the auto-mode classifier refused me opening the Rules page — don't retry):
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /families/{fid} {
+      allow get: if request.auth != null && fid.size() >= 20;
+      allow create, update: if request.auth != null && fid.size() >= 20
+        && request.resource.data.keys().hasOnly(['d','u'])
+        && request.resource.data.d is string && request.resource.data.d.size() < 900000;
+    }
+  }
+}
+```
+Until then the app shows «مش متزامن» (403) and retries by itself.
+
 ## Files
 `index.html` (whole app) · `sw.js` (`CACHE='bait-vN'`, never answers empty → «النت مش واصل» page) ·
 `version.json` · `manifest.webmanifest` · `icon-*.png`, `apple-touch-icon.png`, `maskable-512.png` (house + «ر.س» coin) ·
