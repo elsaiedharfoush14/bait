@@ -22,8 +22,10 @@ records merged by `u` (deletions = `{id,del:1,u}`), settings by `setU`. REST onl
 Until then the app shows «مش متزامن» (403) and retries by itself.
 
 ## Token rules (he pays per token — keep it lean)
-Skills: `token-saver` (habits) · `bait-map` (run `tools/codemap.sh`, read index.html by line ranges, never whole) ·
-`bait-release`. Never open `exceljs.min.js` (blocked). Bound outputs, no polling, short replies.
+Skills: `token-saver` · `bait-map` (run `tools/codemap.sh`, read index.html by line ranges) · `bait-release`.
+Agents: `digest` (Haiku, big files/screenshots → summary), `implementer` (Sonnet, mechanical edits).
+Read hook `claude-kit/hooks/read_guard.py` blocks whole big files, shrinks big images. Global installer for all his
+projects/accounts: `claude-kit/` (README). Never open `exceljs.min.js`. Bound outputs, no polling, short replies.
 
 ## Files
 `index.html` (whole app) · `sw.js` (`CACHE='bait-vN'`, never answers empty → «النت مش واصل» page) ·
