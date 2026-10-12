@@ -18,21 +18,12 @@ closes sheets (`openOv/closeOv` + history).
 «Planning With AI» untouched). Anonymous auth ON, Firestore (eur3, Standard, production mode). One doc per family
 `families/{id}` with field `d` = AES-GCM sealed JSON (key only in the phones, passed by QR / link `#join=id.key`),
 records merged by `u` (deletions = `{id,del:1,u}`), settings by `setU`. REST only (no SDK): `fbToken`, `pull`, `push`.
-**Security rules must be pasted by HIM** (the auto-mode classifier refused me opening the Rules page — don't retry):
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /families/{fid} {
-      allow get: if request.auth != null && fid.size() >= 20;
-      allow create, update: if request.auth != null && fid.size() >= 20
-        && request.resource.data.keys().hasOnly(['d','u'])
-        && request.resource.data.d is string && request.resource.data.d.size() < 900000;
-    }
-  }
-}
-```
+**Security rules must be pasted by HIM** (auto-mode classifier refused me opening the Rules page — don't retry): `docs/firebase-rules.md`.
 Until then the app shows «مش متزامن» (403) and retries by itself.
+
+## Token rules (he pays per token — keep it lean)
+Skills: `token-saver` (habits) · `bait-map` (run `tools/codemap.sh`, read index.html by line ranges, never whole) ·
+`bait-release`. Never open `exceljs.min.js` (blocked). Bound outputs, no polling, short replies.
 
 ## Files
 `index.html` (whole app) · `sw.js` (`CACHE='bait-vN'`, never answers empty → «النت مش واصل» page) ·

@@ -1,0 +1,3 @@
+# ripgrep/Grep skip: minified vendor lib (~950 KB, one search hit = 100k+ tokens) and binaries
+exceljs.min.js
+*.png
