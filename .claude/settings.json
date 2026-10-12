@@ -14,7 +14,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v python3 >/dev/null 2>&1 && exec python3 \"$CLAUDE_PROJECT_DIR/claude-kit/hooks/read_guard.py\" || exec python \"$CLAUDE_PROJECT_DIR/claude-kit/hooks/read_guard.py\"",
+            "command": "command -v python3 >/dev/null 2>&1 && exec python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/read_guard.py\" || exec python \"$CLAUDE_PROJECT_DIR/.claude/hooks/read_guard.py\"",
             "timeout": 15
           }
         ]
