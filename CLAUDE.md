@@ -4,6 +4,7 @@ Household-expenses PWA for **Eng. Elsayed Harfoush**'s wife (iPhone). Sister app
 (`C:\Users\United\Downloads\PETTY CASH APP`, repo `elsaiedharfoush14/uues-petty-cash`) — same voice parser,
 mic, receipt reader, backup, QR install, offline-safe service worker. Reply to him in **Egyptian Arabic**;
 the app's UI speaks to a woman (feminine forms: قولي، ضيفي، صرفتي). Do the work yourself (git / gh / tests).
+Mixed Arabic+English: every English term/command/path in `backticks`, never start a line with English (he asked many times).
 
 - Live: https://elsaiedharfoush14.github.io/bait/ — repo `elsaiedharfoush14/bait` (public), Pages from `main` /.
 - Currency SAR. He chose: monthly budget (+ optional limit per category). He did NOT choose PDF report /
