@@ -23,7 +23,7 @@ records merged by `u` (deletions = `{id,del:1,u}`), settings by `setU`. REST onl
 Until then the app shows «مش متزامن» (403) and retries by itself.
 
 ## Token rules (he pays per token — keep it lean)
-Skills: `token-saver` · `video-view` (`tools/video2sheet.sh` → one image) · `bait-map` (run `tools/codemap.sh`, read index.html by line ranges) · `bait-release`.
+Skills: `token-saver` · `video-view` (`python tools/video_view.py` → frames image + speech text) · `bait-map` (run `tools/codemap.sh`, read index.html by line ranges) · `bait-release`.
 Agents: `digest` (Haiku, big files/screenshots → summary), `implementer` (Sonnet, mechanical edits).
 Read hook `.claude/hooks/read_guard.py` blocks whole big files, shrinks big images. Global kit for all his
 projects/accounts: repo `elsaiedharfoush14/-claude-kit` (clone into `claude-kit`, `python claude-kit/install.py`). Never open `exceljs.min.js`. Bound outputs, no polling, short replies.

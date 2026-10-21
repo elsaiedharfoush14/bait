@@ -1,11 +1,14 @@
 ---
 name: video-view
-description: See a video (screen recording, bug video from the iPhone). Use whenever the user sends/points to a .mp4/.mov/.webm file.
+description: See AND hear a video (screen recording, bug video from the iPhone, any clip). Use whenever the user sends/points to a .mp4/.mov/.webm file.
 ---
-Claude can't play video; turn it into one image and read that.
+Claude can't play video; turn it into one image + a text transcript.
 
-1. `tools/video2sheet.sh <video> [frames=12] [outdir=out/video]` → one JPG grid (4 per row, 360px, time stamped).
-2. Read the JPG once. Need detail at a moment? Grab one frame:
-   `ffmpeg -v error -ss 00:00:07 -i <video> -frames:v 1 -vf scale=720:-2 out/video/t7.jpg`
-3. Long video (>1 min): start with 12 frames, zoom into the interesting range with `-ss/-to` + more frames.
-No sound transcription (no whisper here) — ask him what was said if it matters.
+1. `python tools/video_view.py <video>` (options: `--frames 12 --out out/video --model small --lang ar --no-audio`)
+   → `out/video/<name>_sheet.jpg` (4 per row, time stamped) + `<name>_speech.txt` (`[mm:ss] text`, also printed).
+   First run pip-installs `faster-whisper`, `imageio-ffmpeg`, `pillow` and downloads the model once (needs `huggingface.co`).
+   Speech is local and free (Whisper on CPU); `--model medium` = better Egyptian, slower.
+2. Read the JPG once. Need detail at a moment? one frame:
+   `ffmpeg -v error -ss 7 -i <video> -frames:v 1 -vf scale=720:-2 out/video/t7.jpg`
+3. Long video (>1 min): 12 frames first, then zoom with `-ss/-to`. Transcript tells you where to look.
+If speech says FAILED (403) the host blocks `huggingface.co` → tell him to allow it, or run on his Windows PC.
