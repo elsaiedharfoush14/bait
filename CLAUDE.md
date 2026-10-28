@@ -27,6 +27,7 @@ Skills: `token-saver` · `video-view` (`python tools/video_view.py` → frames i
 Agents: `digest` (Haiku, big files/screenshots → summary), `implementer` (Sonnet, mechanical edits).
 Read hook `.claude/hooks/read_guard.py` blocks whole big files, shrinks big images. Global kit for all his
 projects/accounts: repo `elsaiedharfoush14/-claude-kit` (clone into `claude-kit`, `python claude-kit/install.py`). Never open `exceljs.min.js`. Bound outputs, no polling, short replies.
+Connectors `ElevenLabs`/`HyperFrames`/`Gmail` are denied in `.claude/settings.json` (not needed here, ~4.5k tokens/message); remove a line only if he asks for that connector here.
 
 ## Files
 `index.html` (whole app) · `sw.js` (`CACHE='bait-vN'`, never answers empty → «النت مش واصل» page) ·
