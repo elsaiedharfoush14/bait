@@ -4,7 +4,10 @@
     "deny": [
       "Read(./exceljs.min.js)",
       "Bash(cat exceljs.min.js*)",
-      "Bash(cat ./exceljs.min.js*)"
+      "Bash(cat ./exceljs.min.js*)",
+      "mcp__ElevenLabs",
+      "mcp__HyperFrames_by_HeyGen",
+      "mcp__Gmail"
     ]
   },
   "hooks": {
