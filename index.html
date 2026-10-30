@@ -106,6 +106,9 @@ main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 .billRow{display:grid;grid-template-columns:30px 1fr auto auto;gap:8px;align-items:center;background:var(--bg);border-radius:12px;padding:8px 10px}
 .billRow small{color:var(--muted)}
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.planEv{grid-template-columns:30px 1fr auto}.planEv .num{text-align:left}.planEv .bal{display:block;font-size:12px;font-weight:700}
+.planEv.done{opacity:.55}.pos{color:var(--ok)}.neg{color:var(--bad)}
+.planSum{border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.7;background:var(--brand-soft)}
 .qr{width:200px;height:200px;align-self:center;image-rendering:pixelated;background:#fff;padding:8px;border-radius:12px}
 .foot{text-align:center;color:var(--muted);font-size:13px;line-height:1.8;padding:6px}
 .log{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px}
@@ -206,6 +209,15 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mu
   </section>
 
   <section class="page" id="ana" hidden>
+    <div class="card" id="planCard">
+      <h3>🏦 خطة سداد القسط <small id="planNext"></small></h3>
+      <div class="row2"><label class="f">سعر الريال (جنيه)<input id="plRate" inputmode="decimal" class="num" style="text-align:center"></label><label class="f">التحويش كل شهر (ريال)<input id="plSave" inputmode="decimal" class="num" style="text-align:center"></label></div>
+      <div class="planSum" id="planSum"></div>
+      <div class="bills" id="planEvs"></div>
+      <b style="font-size:14px">تحويش الشهور <small class="note">(دوسي على الشهر لما تحوّشيه)</small></b>
+      <div class="filters" id="planMonths"></div>
+      <button class="btn soft" id="plAdd" type="button">➕ بند جديد (قسط أو فلوس جاية)</button>
+    </div>
     <div class="card">
       <h3>📈 آخر 6 شهور</h3>
       <div class="chart" id="chart"></div>
@@ -276,6 +288,7 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mu
       <button class="linkBtn" id="tourBtn" type="button">👋 شوفي الجولة التعريفية تاني</button>
       <b style="font-size:15px">آخر التحديثات</b>
       <ul class="log">
+        <li><b class="num">2026.10.30</b>🏦 خطة سداد القسط في صفحة التحليل: الأقساط والفلوس الجاية، والتطبيق يحسب هتكفي ولا ناقص كام.</li>
         <li><b class="num">2026.10.07</b>🔗 مزامنة بين الموبايلين، 👥 مين صرف، 📌 الفواتير الثابتة، 📈 التحليل والمقارنة، 🔔 التنبيهات، 🧾 صورة لكل فاتورة، 📄 تقرير الشهر و Excel، 🏷️ أنواع خاصة.</li>
         <li><b class="num">2026.10.06</b>أول نسخة: المصاريف بالكلام، قراية الفاتورة، الميزانية.</li>
       </ul>
@@ -321,6 +334,15 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mu
   <button class="btn danger" id="biDel" type="button">🗑️ امسحي الفاتورة الثابتة</button>
 </div></div>
 
+<div class="ov" id="plOv" hidden><div class="sheet">
+  <h3 id="plTitle">🏦 بند في الخطة</h3>
+  <label class="f">الاسم<input id="plName" placeholder="مثلاً: قسط مايو أو جمعية" autocomplete="off"></label>
+  <div class="row2"><label class="f">المبلغ<input id="plAmt" inputmode="decimal" class="num" placeholder="0"></label><label class="f">العملة<select id="plCur"><option value="EGP">جنيه</option><option value="SAR">ريال</option></select></label></div>
+  <div class="row2"><label class="f">التاريخ<input id="plDate" type="date"></label><label class="f">النوع<select id="plOut"><option value="1">قسط (طالع)</option><option value="0">فلوس جاية</option></select></label></div>
+  <div class="row2"><button class="btn" id="plCancel" type="button">إلغاء</button><button class="btn primary" id="plSaveEv" type="button">✓ احفظي</button></div>
+  <button class="btn danger" id="plDel" type="button">🗑️ امسحي البند</button>
+</div></div>
+
 <div class="ov" id="catOv" hidden><div class="sheet">
   <h3>🏷️ نوع جديد</h3>
   <div class="row2" style="grid-template-columns:90px 1fr"><label class="f">أيقونة<input id="caEmoji" maxlength="4" placeholder="💰" style="text-align:center;font-size:22px"></label><label class="f">الاسم<input id="caName" placeholder="مثلاً: جمعية" autocomplete="off"></label></div>
@@ -361,7 +383,7 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mu
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-const APP_VER='2026.10.07.1';
+const APP_VER='2026.10.30.1';
 const APP_URL='https://elsaiedharfoush14.github.io/bait/';
 /* Firebase (Google) project used only as an encrypted mailbox between the family's phones */
 const FB={apiKey:'AIzaSyA_oyev2a5ZnR6TIg4HDy_F4SWg7ZNayAk',projectId:'bait-sync'};   /* public web key (not a secret); access is limited by the Firestore rules */
@@ -622,7 +644,62 @@ function renderAna(){
   if(!$('whoCard').hidden){const W=$('whoCats');W.innerHTML='';const mx=Math.max(...Object.values(byW));Object.entries(byW).sort((a,b)=>b[1]-a[1]).forEach(([w,v])=>{
     const r=document.createElement('div');r.className='cat';r.innerHTML='<span class="e">👤</span><div class="n"><span></span><div class="cbar"><i></i></div></div><div class="v"><b class="num"></b></div>';
     r.querySelector('.n span').textContent=w+' · ⁦'+Math.round(v/sel.v*100)+'%⁩';r.querySelector('i').style.width=(v/mx*100)+'%';r.querySelector('.v b').textContent=fmt(v);W.appendChild(r)})}
+  renderPlan();
 }
+
+/* ---------- 🏦 debt plan: installments vs money coming in; the whole plan syncs as one object by plan.u ----------
+   saving of month m (salary at its end) counts for anything dated in a later month */
+const PL=()=>D.plan||(D.plan={rate:0,save:0,from:shiftMonth(mKey(today()),1),ev:{},mo:{},u:0});
+const egp=(a,cur)=>cur==='SAR'?a*(+PL().rate||0):a;
+const money=(v,c,sg)=>'⁦'+(sg||'')+fmt(Math.round(v))+'⁩'+(c==='SAR'?' ر.س':' ج.م');
+const dTxt=d=>new Date(d+'T12:00').toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
+function planRun(){const P=PL(),evs=Object.values(P.ev).sort((a,b)=>a.d.localeCompare(b.d)||a.out-b.out);
+  const outs=evs.filter(e=>e.out),end=outs.length?mKey(outs[outs.length-1].d):P.from,months=[];
+  for(let k=P.from;k<end;k=shiftMonth(k,1))months.push(k);
+  let bal=0,i=0;const rows=evs.map(e=>{const m=mKey(e.d);for(;i<months.length&&months[i]<m;i++)bal+=(+P.save||0)*(+P.rate||0);
+    bal+=(e.out?-1:1)*egp(e.a,e.cur);return {e,bal}});
+  return {rows,months,bal}}
+function planTouch(){PL().u=NOW();save();renderPlan()}
+function renderPlan(){const P=PL(),{rows,months,bal}=planRun(),E=$('planEvs'),S=$('planSum');
+  $('plRate').value=P.rate||'';$('plSave').value=P.save||'';E.innerHTML='';
+  rows.forEach(({e,bal})=>{const r=document.createElement('div');r.className='bill planEv'+(e.done?' done':'');
+    r.innerHTML='<button class="e" type="button" style="border:0;background:none;padding:0"></button><div class="t"><b></b><small></small></div><div class="num"><b></b><span class="bal"></span></div>';
+    const ic=r.querySelector('.e');ic.textContent=e.done?'✅':e.out?'🏦':'💰';ic.setAttribute('aria-label',e.out?'اتدفع':'اتقبض');
+    ic.onclick=ev=>{ev.stopPropagation();e.done=e.done?0:1;planTouch()};
+    r.querySelector('.t b').textContent=e.n;
+    r.querySelector('.t small').textContent=dTxt(e.d)+(e.cur==='SAR'&&P.rate?' · ≈ '+money(egp(e.a,e.cur)):'');
+    r.querySelector('.num b').textContent=money(e.a,e.cur,e.out?'−':'+');
+    if(e.out){const b=r.querySelector('.bal');b.className='bal '+(bal>=0?'pos':'neg');b.textContent=bal>=0?'✓ يفضل '+money(bal):'ناقص '+money(-bal)}
+    r.onclick=()=>openPlanEv(e.id);E.appendChild(r)});
+  const nx=rows.map(x=>x.e).find(e=>e.out&&!e.done&&e.d>=today());
+  $('planNext').textContent=nx?'فاضل '+Math.round((new Date(nx.d)-new Date(today()))/864e5)+' يوم على «'+nx.n+'»':'';
+  const needRate=!P.rate&&(P.save||rows.some(x=>x.e.cur==='SAR')),got=months.filter(k=>P.mo[k]).length;
+  S.textContent=!rows.length?'ضيفي الأقساط اللي عليكم والفلوس اللي جاية (جمعيات، مكافآت…)، والتطبيق يحسب لك هتكفي في ميعادها ولا لأ.'
+    :needRate?'⚠️ حطّي سعر الريال الأول عشان الحسبة تطلع صح.'
+    :(bal>=0?'✅ كله متغطي، وفي الآخر يفضل معاكم '+money(bal):'⚠️ الناقص في الآخر '+money(-bal)+(P.rate?' ≈ '+money(-bal/P.rate,'SAR'):''))
+      +(months.length&&P.save?' · حوّشتي '+got+' من '+months.length+' شهور ('+money(got*P.save,'SAR')+')':'');
+  const M=$('planMonths');M.innerHTML='';$('planMonths').previousElementSibling.hidden=M.hidden=!(months.length&&P.save);
+  months.forEach(k=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=(P.mo[k]?'✓ ':'')+monthShort(k);
+    b.setAttribute('aria-pressed',String(!!P.mo[k]));b.onclick=()=>{if(P.mo[k])delete P.mo[k];else P.mo[k]=1;planTouch()};M.appendChild(b)})}
+let plId=null;
+function openPlanEv(id){plId=id;const e=id?PL().ev[id]:{n:'',a:'',cur:'EGP',d:'',out:1};
+  $('plTitle').textContent=id?'✏️ بند في الخطة':'🏦 بند جديد';$('plName').value=e.n;$('plAmt').value=e.a||'';$('plCur').value=e.cur;$('plDate').value=e.d;
+  $('plOut').value=String(e.out?1:0);$('plDel').hidden=!id;openOv('plOv');setTimeout(()=>$('plName').focus(),100)}
+$('plAdd').onclick=()=>openPlanEv(null);
+$('plCancel').onclick=()=>closeOv('plOv');
+$('plSaveEv').onclick=()=>{const n=$('plName').value.trim(),a=num($('plAmt').value),d=$('plDate').value;
+  if(!n){$('plName').focus();return}if(!a){$('plAmt').focus();return}if(!d){$('plDate').focus();return}
+  const id=plId||uid();PL().ev[id]={id,n,a,d,cur:$('plCur').value,out:+$('plOut').value,done:(PL().ev[id]||{}).done||0};closeOv('plOv');planTouch();toast('✓ اتحفظ «'+n+'»')};
+$('plDel').onclick=()=>{if(!plId)return;delete PL().ev[plId];closeOv('plOv');planTouch();toast('اتمسح البند')};
+$('plRate').onchange=()=>{PL().rate=num($('plRate').value);planTouch()};
+$('plSave').onchange=()=>{PL().save=num($('plSave').value);planTouch()};
+/* a plan can arrive by link: #plan=<base64url JSON {rate,save,from,ev:[[name,date,amount,cur,out]]}> — the numbers never live in the repo */
+function checkPlan(){const m=location.hash.match(/plan=([A-Za-z0-9_-]+)/);if(!m)return;
+  try{history.replaceState(null,'',location.pathname)}catch(e){}
+  let p;try{p=JSON.parse(new TextDecoder().decode(b64u.dec(m[1])));if(!Array.isArray(p.ev))throw 0}catch(e){toast('⚠️ لينك الخطة مش سليم');return}
+  if(D.plan&&Object.keys(D.plan.ev).length&&!confirm('تحطّي الخطة اللي في اللينك مكان الخطة الموجودة؟'))return;
+  const ev={};p.ev.forEach(([n,d,a,cur,out])=>{if(!n||!/^\d{4}-\d\d-\d\d$/.test(d)||!(+a))return;const id=uid();ev[id]={id,n:String(n),d,a:+a,cur:cur==='SAR'?'SAR':'EGP',out:out?1:0,done:0}});
+  D.plan={rate:+p.rate||0,save:+p.save||0,from:/^\d{4}-\d\d$/.test(p.from)?p.from:shiftMonth(mKey(today()),1),ev,mo:{},u:NOW()};save();show('ana');toast('✓ اتحطت خطة السداد')}
 
 /* ---------- tabs, months, back button ---------- */
 function show(t){TAB=t;['home','list','ana','more'].forEach(p=>$(p).hidden=p!==t);
@@ -635,7 +712,7 @@ const goMonth=n=>{const k=shiftMonth(MONTH,n);if(k>mKey(today()))return;MONTH=k;
 $('mPrev').onclick=$('lPrev').onclick=()=>goMonth(-1); $('mNext').onclick=$('lNext').onclick=()=>goMonth(1);
 $('q').oninput=renderList;
 /* the phone's back button closes an open window instead of leaving the app */
-const OVS=['edOv','budOv','billOv','catOv','bkOv','tour','pvOv'];
+const OVS=['edOv','budOv','billOv','plOv','catOv','bkOv','tour','pvOv'];
 function openOv(id){$(id).hidden=false;try{history.pushState({ov:id},'')}catch(e){}}
 function closeOv(id){if($(id).hidden)return;$(id).hidden=true;if(id==='edOv')edCleanup();if(history.state&&history.state.ov===id)try{history.back()}catch(e){}}
 addEventListener('popstate',()=>{OVS.forEach(id=>{if(!$(id).hidden){$(id).hidden=true;if(id==='edOv')edCleanup()}})});
@@ -900,9 +977,10 @@ async function push(obj){const r=await fetch(docUrl()+'?updateMask.fieldPaths=d&
   body:JSON.stringify({fields:{d:{stringValue:await seal(obj)},u:{integerValue:String(NOW())}}})});if(!r.ok)throw new Error('write '+r.status)}
 function mergeInto(A,B){let ch=false;
   for(const k of ['expenses','bills','cats']){A[k]=A[k]||{};for(const [id,r] of Object.entries(B[k]||{})){const l=A[k][id];if(!l||(r.u||0)>(l.u||0)){A[k][id]=r;ch=true}}}
+  if(B.plan&&(B.plan.u||0)>((A.plan&&A.plan.u)||0)){A.plan=B.plan;ch=true}
   if((B.setU||0)>(A.setU||0)){A.budget=B.budget||0;A.budgets=B.budgets||{};A.limits=B.limits||{};A.setU=B.setU;ch=true}
   return ch}
-const shared=o=>({expenses:o.expenses||{},bills:o.bills||{},cats:o.cats||{},budget:o.budget||0,budgets:o.budgets||{},limits:o.limits||{},setU:o.setU||0});
+const shared=o=>({expenses:o.expenses||{},bills:o.bills||{},cats:o.cats||{},budget:o.budget||0,budgets:o.budgets||{},limits:o.limits||{},setU:o.setU||0,plan:o.plan&&o.plan.u?o.plan:null});
 let syncing=false,syncAgain=false,syncT=null,syncState='',syncErr='';
 function syncSoon(){if(!SY)return;clearTimeout(syncT);syncT=setTimeout(syncNow,1500)}
 async function syncNow(){
@@ -1045,7 +1123,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 /* ---------- boot ---------- */
 {const h=new Date().getHours();$('hello').textContent=(h<12?'صباح الخير ☀️':h<18?'نهارك سعيد 🌤️':'مساء الخير 🌙')+(WHO?' يا '+WHO:'')}
 Object.values(D.expenses).forEach(e=>{if(e.u==null)e.u=e.t||1});   /* records from version 1 had no change time */
-render(); checkUpdate(); checkJoin(); syncNow();
+render(); checkUpdate(); checkPlan(); checkJoin(); syncNow();
 PDB.keys().then(k=>{photoKeys=new Set(k||[]);render()}).catch(()=>{});
 setInterval(()=>{if(SY&&document.visibilityState==='visible')syncNow()},45e3);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){checkUpdate();syncNow();if(MONTH>mKey(today()))MONTH=mKey(today());render()}});
