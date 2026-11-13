@@ -1,0 +1,17 @@
+{
+  "name": "Cu/Ag Commissioning",
+  "short_name": "Cu/Ag",
+  "description": "Ultrasonic flowmeter and NT Cu/Ag ionisation unit commissioning: settings, checks and copper test adjustment.",
+  "lang": "ar",
+  "dir": "auto",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5f4",
+  "theme_color": "#0f766e",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
